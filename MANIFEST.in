@@ -1,0 +1,4 @@
+include README.md MANIFEST.in
+include setup.py
+recursive-include . *.txt
+include lazynlp/*.txt

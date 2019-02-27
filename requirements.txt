@@ -1,0 +1,3 @@
+git+https://github.com/jaybaird/python-bloomfilter/
+justext
+unidecode
