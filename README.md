@@ -20,7 +20,7 @@ pip3 install -r requirements.txt
 
 3. Install the library
 ``
-python3 setup.py install
+pip3 install .
 ``
 
 If you want to uninstall the library, use:
@@ -43,9 +43,9 @@ There are about 23M URLs from between 2015-06 to 2018-10, of which around 40 - 6
 It means that after you've downloaded and cleaned all good URLs from this, you should have approx 10M webpages or 50GB of pure text.
 
 #### Gutenberg
-You can download the list of all URLs to US Gutenberg books [here](). There are 50K books, which convert to about 14GB of pure text.
+You can download the list of all URLs to US Gutenberg books [here](https://drive.google.com/file/d/1zIVaRaVqGP8VNBUT4eKAzW3gYWxNk728/view?usp=sharing). There are 50K books, which convert to about 14GB of pure text.
 
-You can also run ``lazynlp.get_us_gutenberg_links()`` to get the same list. For example, if you want to get all the Gutenberg URLs and store it in the file ``us_gutenberg.urls``:
+You can also run ``lazynlp.get_us_gutenberg_links()`` to get the same list. For example, if you want to get all the Gutenberg URLs and store it in the file ``us_gutenberg.urls``, run the following command. This might take half a day.
 
 ``
 lazynlp.get_us_gutenberg_links('us_gutenberg.urls')
@@ -82,6 +82,14 @@ This function allows you to deduplicate a new file against all previously dedupl
 
 ### Step 3. Download the URLs
 
+If you want to download each webpage separately, call:
+
+``
+lazynlp.download_page(link, context=None, timeout=None)
+``
+
+If you want to download from a file that contains a list of URLs, call:
+
 ``
 lazynlp.download_pages(link_file, folder, timeout=30, default_skip=True, extensions=[], domains=[])
 ``
@@ -103,11 +111,11 @@ lazynlp.download_pages(link_file, folder, timeout=30, default_skip=True, extensi
 	
 	default_skip:
 
-		set to True if you want to automatically skip all URLs that contain domains and extensions that are known to be scraper-unfriendly.
+		set to True if you want to automatically skip all URLs that contain domains and extensions that are known to be scraper-unfriendly or NSFW.
 	
-	You can see the list of excluded domains at lazynlp/exclude_domains.txt.
+		You can see the list of excluded domains at lazynlp/exclude_domains.txt.
 
-	You can see the list of excluded extensions at lazynlp/exclude_extensions.txt
+		You can see the list of excluded extensions at lazynlp/exclude_extensions.txt
 	
 	You can also add your own domains and extensions to skip with domains and extensions and arguments.
 	
@@ -130,25 +138,21 @@ lazynlp.download_pages(link_file, folder, timeout=30, default_skip=True, extensi
 If you have a lot of URLs, you can divide the list into multiple files and call this function separately. I was able to run 40 scripts in parallel.
 I guess I could have parallizing the code. I just found this to be easier.
 
-If you want to download each webpage separately, call:
-
-``
-lazynlp.download_page(link, ctx=None, timeout=None)
-``
 
 ### Step 4. Clean the webpages
+
 You can get rid of all HTML tags, decode utf-8 into string, transliterate foreign characters, collapse white space, replace unprintable characters, unescape HTML, etc. using methods available in lazynlp/cleaner.py.
 
-You can also just call
+You can also just call the following function to do most of the processing.
 
 ``
 lazynlp.clean_page(page)
 ``
 
-to do most of it.
 
-Note:
-In this library, the function lazynlp.download_pages() does both the crawling and cleaning part, so the webpages you have are pure text, like this:
+#### Note:
+
+In this library, the function ``lazynlp.download_pages()`` does both the crawling and cleaning part, so the webpages you have are pure text, like this:
 
 ```
 http://www.thecannabist.co/2017/03/02/jeff-sessions-russia-resign-democrats/74687/
@@ -209,7 +213,7 @@ Names of all the files that are deemed duplicated are stored in ``dupped_files.l
 
 Names of all the files used for the dataset are stored in ``clean_files.list``
 
-Some statistics to keep in mind:
+## Some notes:
 1. 1GB of text is about 1b characters. An English word has on average 4.5 characters, or 5.5 including whitespace.
 So 1GB of text is about 181M words.
 

@@ -1,5 +1,6 @@
 import glob
 import hashlib
+import html
 import http
 import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -9,7 +10,7 @@ import ssl
 import time
 import urllib.request
 
-import html
+import tldextract
 import requests
 
 from lazynlp.cleaner import *
@@ -72,16 +73,25 @@ def get_aus_gutenberg_links(outfile, catalog_file='https://www.gutenberg.org/dir
 				seen_ids.add(book_id)
 
 def to_skip(link, extensions=None, domains=None):
+	""" domains can be:
+		- just the name (as in: google)
+		- main domain (as in: google.com)
+		- subdomain (as in: news.google.com)
+	"""
 	for ext in extensions:
 		if link.endswith(ext):
 			return True
 	raw_url = get_raw_url(link)
-	for skip in domains:
-		if raw_url.startswith(skip):
-			return True
+	subdomain, domain, suffix = tldextract.extract(link)
+	if domain in domains:
+		return True
+	if '.'.join([domain, suffix]) in domains:
+		return True
+	if '.'.join([subdomain, domain, suffix]) in domains:
+		return True
 	return False
 
-def download_page(link, ctx=None, timeout=None):
+def download_page(link, context=None, timeout=None):
 	"""
 	Return code, page
 	0: successfully read (write to index)
@@ -102,11 +112,11 @@ def download_page(link, ctx=None, timeout=None):
 
 	try:
 		if not timeout is None:
-			response = urllib.request.urlopen(req, context=ctx, timeout=timeout)
+			response = urllib.request.urlopen(req, context=context, timeout=timeout)
 		else:
-			response = urllib.request.urlopen(req, context=ctx)
+			response = urllib.request.urlopen(req, context=context)
 	except UnicodeError as e:
-		print('UnicodeError for', link, e.reason)
+		print('UnicodeError for', link)
 		return 2, ''
 	except (urllib.error.HTTPError) as e:
 		print('Error {} for {}'.format(e.code, link))
@@ -157,8 +167,12 @@ def download_pages(link_file, folder, timeout=30, default_skip=True, extensions=
 		seconds to wait for a page to respond before abandoning it.
 
 	default_skip=True if you want to automatically skip all URLs that contain domains and extensions that are
-	known to be scraper-unfriendly.
-	You can see the list of excluded domains at lazynlp/exclude_domains.txt
+	known to be scraper-unfriendly or NSFW.
+	You can see the list of excluded domains at lazynlp/exclude_domains.txt.
+	domains can be:
+		- just the name (as in: google)
+		- main domain (as in: google.com)
+		- subdomain (as in: news.google.com)
 	You can see the list of excluded extensions at lazynlp/exclude_extensions.txt
 
 	You can also add your own domains and extensions to skip with domains and extensions and arguments.

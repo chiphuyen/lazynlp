@@ -16,6 +16,7 @@
 .jpeg
 .jpg
 .log
+.m4v
 .mjpg
 .mov
 .mp3
