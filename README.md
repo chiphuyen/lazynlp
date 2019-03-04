@@ -38,9 +38,9 @@ pip3 uninstall lazynlp
 There are several major dumps of URLs available that you can use.
 
 #### Reddit URLs
-This is [the link to all submissions to Reddit by months](https://files.pushshift.io/reddit/submissions/)'s . You can download the raw dump and process to get the links. However, keep in mind that each of these dumps is huge (100MB - 1GB).
+This is [the link to all submissions to Reddit by months](https://files.pushshift.io/reddit/submissions/). You can download the raw dump and process to get the links. Keep in mind that each of these dumps is huge (100MB - 1GB).
 
-[@jcpeterson](https://github.com/jcpeterson) is kind enough to provide a list of deduplicated links with at least 3 karmas that you can download [here](https://drive.google.com/file/d/1hRtA3zZ0K5UHKOQ0_8d0BIc_1VyxgY51/view?usp=sharing).
+[@jcpeterson](https://github.com/jcpeterson) is kind enough to provide a list of deduplicated links with at least 3 karma that you can download [here](https://drive.google.com/file/d/1hRtA3zZ0K5UHKOQ0_8d0BIc_1VyxgY51/view?usp=sharing).
 
 There are about 23M URLs from between 2015-06 to 2018-10, of which around 40 - 60 \% are bad URLs (URLs no longer exist or aren't scraper-friendly).
 It means that after you've downloaded and cleaned all good URLs from this, you should have approx 10M webpages or 50GB of pure text.
@@ -139,7 +139,7 @@ lazynlp.download_pages(link_file, folder, timeout=30, default_skip=True, extensi
 	"""
 
 If you have a lot of URLs, you can divide the list into multiple files and call this function separately. I was able to run 40 scripts in parallel.
-I guess I could have parallizing the code. I just found this to be easier.
+I guess I could have parallized the code. I just found this to be easier.
 
 
 ### Step 4. Clean the webpages
