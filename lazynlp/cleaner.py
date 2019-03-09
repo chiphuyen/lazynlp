@@ -77,7 +77,7 @@ def connect_lines(txt, line_sep='\n'):
 
     This function is to connect those lines.
 
-    Two consecutive lines are seperated by line_sep.
+    Two consecutive lines are separated by line_sep.
     """
     lines = txt.split('\n')
 
