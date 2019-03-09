@@ -222,4 +222,4 @@ So 1GB of text is about 181M words.
 3. The OpenAI dataset has 40GB, which I estimate to contain about 7-8 billion words.
 If you download all the webpages from the good Reddit URLs and Gutenberg books, you should have a dataset bigger than OpenAI's WebText.
 
-4. OpenAI, in their paper for GPT-2, didn't include Wikipedia artciles for fear of overlapping. You can choose to include Wikipedia articles that have less than a certain amount of overlapping with the existing dataset using ``lazynlp.estimate_overlap_bf(bf, target_file, gran='word', n=8``.
+4. OpenAI, in their paper for GPT-2, didn't include Wikipedia articles for fear of overlapping. You can choose to include Wikipedia articles that have less than a certain amount of overlapping with the existing dataset using ``lazynlp.estimate_overlap_bf(bf, target_file, gran='word', n=8``.
