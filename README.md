@@ -1,7 +1,7 @@
 # lazynlp
 
 [![DOI](https://zenodo.org/badge/173005932.svg)](https://zenodo.org/badge/latestdoi/173005932)
-
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 A straightfoward library that allows you to crawl, clean up, and deduplicate webpages to create massive monolingual datasets. Using this library, you should be able to create datasets larger than the one used by OpenAI for GPT-2.
 
