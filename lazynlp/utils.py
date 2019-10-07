@@ -1,5 +1,6 @@
 import hashlib
 import os
+import re
 
 
 def dict_sorted_2_file(dictionary, file, reverse=True):
