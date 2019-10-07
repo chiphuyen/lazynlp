@@ -4,23 +4,42 @@ import shutil
 
 from pybloom import BloomFilter
 
-from lazynlp.analytics import *
-from lazynlp.utils import *
+from .analytics import *
+from .utils import *
+
 
 def create_gutenberg():
     pass
 
+
 def create_reddit_data():
     pass
+
 
 def create_wikipedia():
     pass
 
-def filter_files(files, threshold=0.5, gran='word', n=8, capacity=100000000, error_rate=1e-7, header=0, interval=1000000):
-    """ Include only files that has less than threshold n-gram overlapping with the current dataset
-    Names of all the files that are deemed duplicated are stored in dupped_files.list
-    Names of all the files used for the dataset are stored in clean_files.list
-    header: number of lines of each file to skip. It's because in our format, the first line is the url
+
+def filter_files(files,
+                 threshold=0.5,
+                 gran='word',
+                 n=8,
+                 capacity=100000000,
+                 error_rate=1e-7,
+                 header=0,
+                 interval=1000000):
+    """ Include only files that has less than threshold n-gram overlapping
+        with the current dataset.
+    Names of all the files that are deemed duplicated are stored in
+        dupped_files.list
+    Names of all the files used for the dataset are stored in
+        clean_files.list
+
+    Args:
+        header (int):
+            number of lines of each file to skip. It's because in our format,
+            the first line is the url
+
     """
     sorted_files = sort_files_by_size(files)
     bf = BloomFilter(capacity=capacity, error_rate=error_rate)
@@ -36,10 +55,16 @@ def filter_files(files, threshold=0.5, gran='word', n=8, capacity=100000000, err
             dupped_files.write(file.strip() + '\n')
             dup_count += 1
         else:
-            bf = build_ngram(file=file, bf=bf, gran=gran, n=n, uncase=True, alphanumeric=True, interval=interval)
+            bf = build_ngram(file=file,
+                             bf=bf,
+                             gran=gran,
+                             n=n,
+                             uncase=True,
+                             alphanumeric=True,
+                             interval=interval)
             clean_files.write(file.strip() + '\n')
     total = len(files)
-    print('{} duplicated out of {}: {}'.format(dup_count, total, dup_count/total))
+    print(f'{dup_count} duplicated out of {total}: {dup_count / total}')
 
 
 def partition(file, outfold, test_size=0.1, valid_size=0.1):
@@ -54,7 +79,8 @@ def partition(file, outfold, test_size=0.1, valid_size=0.1):
     If it's an integer larger than 1, test/valid will contain that number of samples
     """
     os.makedirs(outfold, exist_ok=True)
-    files = [open(os.path.join(outfold, filename), 'w') for filename in ['train.txt', 'valid.txt', 'test.txt']]
+    files = [open(f'{outfold}/{filename}', 'w')
+             for filename in ['train.txt', 'valid.txt', 'test.txt']]
     adjusted_test_size = test_size / (1 - valid_size)
     with open(file, 'r') as f:
         for line in f.readlines():

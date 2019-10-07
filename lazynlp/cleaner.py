@@ -1,15 +1,17 @@
 from collections import Counter
 import lxml
 import os
-dir_path = os.path.dirname(os.path.realpath(__file__))
-import re
 import string
+import re
 
 import html
 import justext
 from unidecode import unidecode
 
-from lazynlp.utils import *
+from .utils import *
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
 
 def parse_html(page):
     """ Clean HTML tags for webpages that aren't Gutenberg books
@@ -28,6 +30,7 @@ def parse_html(page):
             paragraphs.append(part.text)
     return '\n\n'.join(paragraphs)
 
+
 def clean_html(txt):
     """ Clean HTML tags of webpages downloaded
     Use this function for Gutenberg book format.
@@ -42,21 +45,25 @@ def clean_html(txt):
     txt = connect_lines(txt)
     return re.sub(html_tag_re, ' ', txt).strip()
 
+
 def remove_non_alphanumeric(txt):
     """ Remove all non-alphanumeric characters, except space, from the text
     """
     return re.sub(r'[^a-zA-Z0-9 ]+', '', txt)
+
 
 def remove_non_alpha(txt):
     """ Remove all non-alphabetical characters, except space, from the text
     """
     return re.sub(r'[^a-zA-Z ]+', '', txt)
 
+
 def transliterate(txt):
     """ Transliterate foreign characters into its Latin spelling.
     For example, '\u5317\u4EB0' will be transliterated to 'Bei Jing'
     """
     return unidecode(txt)
+
 
 def collapse_white_spaces(txt):
     """Collapse multiple white spaces into one white space
@@ -70,6 +77,7 @@ def collapse_white_spaces(txt):
             clean_txt += c
         prev = c
     return clean_txt
+
 
 def connect_lines(txt, line_sep='\n'):
     """ This happens when you crawl text from a webpage and
@@ -94,6 +102,7 @@ def connect_lines(txt, line_sep='\n'):
 
     return result + curr
 
+
 def clean_page(page):
     try:
         page = page.decode('utf-8')
@@ -108,21 +117,25 @@ def clean_page(page):
     txt = html.unescape(txt)
     return txt
 
+
 def find_unprintable(txt):
     """Find the list of unprintable character
     and return a Counter of them
     """
     printable = set(string.printable)
-    unprintable = [c for c in txt if not c in printable]
+    unprintable = [c for c in txt if c not in printable]
     return Counter(unprintable)
+
 
 def replace_unprintable(txt):
     """Replace non-printable characters with printable characters
-    """ 
+    """
     printable = set(string.printable)
-    lines = open(os.path.join(dir_path, 'unprintable_chars.txt'), 'r').readlines()
-    chars = {line.strip().split(':')[0]: line.strip().split(':')[1] for line in lines}
+    lines = open(f'{dir_path}/unprintable_chars.txt', 'r').readlines()
+    chars = {line.strip().split(':')[0]:
+             line.strip().split(':')[1] for line in lines}
     return ''.join([c if c in printable else chars[c] for c in txt])
+
 
 def dedup_lines(files, outfold):
     """
@@ -136,7 +149,7 @@ def dedup_lines(files, outfold):
         and save to outfold/files[n]
 
     """
-    os.makedirs(outfold, exist_ok=True) 
+    os.makedirs(outfold, exist_ok=True)
     seen = set()
     total, unique = 0, 0
 
@@ -151,7 +164,7 @@ def dedup_lines(files, outfold):
         line = f_in.readline()
         while line:
             hashed = get_hash(line.strip())
-            if not hashed in seen:
+            if hashed not in seen:
                 out.write(line)
                 seen.add(hashed)
                 unique += 1
@@ -161,7 +174,13 @@ def dedup_lines(files, outfold):
         out.close()
     if total == 0:
         raise ValueError('The files list seems to be empty')
-    print('{} unique lines out of {}: {}'.format(unique, total, unique/total))
+    print(
+        '{} unique lines out of {}: {}'.format(
+            unique,
+            total,
+            unique /
+            total))
+
 
 def dedup_lines_from_new_file(original_files, new_file, outfile):
     """ Get unique lines from new_file that aren't already in original_files
@@ -184,11 +203,11 @@ def dedup_lines_from_new_file(original_files, new_file, outfile):
         line = f_in.readline()
         while line:
             hashed = get_hash(line.strip())
-            if not hashed in seen:
+            if hashed not in seen:
                 out.write(line)
                 seen.add(hashed)
                 unique += 1
             total += 1
             line = f_in.readline()
     out.close()
-    print('{} unique lines out of {}: {}'.format(unique, total, unique/total))
+    print(f'{unique} unique lines out of {total}: {unique / total}')
