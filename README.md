@@ -216,6 +216,17 @@ Names of all the files that are deemed duplicated are stored in ``dupped_files.l
 
 Names of all the files used for the dataset are stored in ``clean_files.list``
 
+## Tests
+
+After installing the dependencies in `requirements.txt`, run:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+The download-filter tests use temporary files, synthetic URLs, and mocked downloads
+and domain lookups; they do not access websites.
+
 ## Some notes:
 1. 1GB of text is about 1b characters. An English word has on average 4.5 characters, or 5.5 including whitespace.
 So 1GB of text is about 181M words.

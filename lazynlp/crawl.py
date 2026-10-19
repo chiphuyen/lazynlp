@@ -174,8 +174,8 @@ def download_pages(link_file,
                    folder,
                    timeout=30,
                    default_skip=True,
-                   extensions=[],
-                   domains=[]):
+                   extensions=None,
+                   domains=None):
     """
     link_file (str):
         file contains links to pages to crawl. Each line contains one URL.
@@ -214,6 +214,10 @@ def download_pages(link_file,
                             of bad encoding issues.
             empty.urls contains the URLs that have empty textual content.
     """
+    # Adding the default exclusions must not modify caller-owned or shared lists.
+    extensions = list(extensions) if extensions is not None else []
+    domains = list(domains) if domains is not None else []
+
     index_file = os.path.join(folder, 'index.urls')
     idx = 0
     links = open(link_file, 'r')
