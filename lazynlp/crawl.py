@@ -93,7 +93,8 @@ def to_skip(link, extensions=None, domains=None):
         if link.endswith(ext):
             return True
     raw_url = get_raw_url(link)
-    subdomain, domain, suffix = tldextract.extract(link)
+    extracted = tldextract.extract(link)
+    subdomain, domain, suffix = extracted.subdomain, extracted.domain, extracted.suffix
     if domain in domains:
         return True
     if '.'.join([domain, suffix]) in domains:
